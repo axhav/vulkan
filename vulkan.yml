@@ -14,7 +14,7 @@ GENERATOR:
     ]}
     
 PARSER:
-  IncludePaths: [/usr/include]
+  IncludePaths: [/usr/include, /usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include]
   # IncludePaths: [windows/, /usr/include]
   SourcesPaths:
     - vulkan/vulkan.h
@@ -39,11 +39,13 @@ TRANSLATOR:
       - {action: accept, from: PFN_vkDebugReportCallback}
       - {action: replace, from: PFN_vkDebugReportCallback, to: DebugReportCallbackFunc}
       - {action: ignore, from: DebugUtilsMessenger}
+      - {action: ignore, from: DeviceMemoryReport}
       # these in global section so doc will work
       - {action: accept, from: ^callVk}
       - {action: replace, from: ^callVk}
     type:
       - {action: accept, from: "^ANativeWindow$"}
+      - {action: replace, from: AccelerationStructureTypeNV, to: AccelerationStructureType}
       - {action: replace, from: "KHR$"}
       - {action: replace, from: "EXT$"}
     function:
@@ -51,6 +53,7 @@ TRANSLATOR:
       - {action: replace, from: "EXT$"}
     const:
       - {action: ignore, from: NULL_HANDLE$}
+      - {action: ignore, from: "ONE$"}
       - {action: replace, from: "KHR$"}
       - {action: replace, from: "EXT$"}
       - {transform: lower}
@@ -61,16 +64,18 @@ TRANSLATOR:
       - {transform: unexport}
     post-global:
       - {action: doc, from: "KHR$",
-              to: "https://www.khronos.org/registry/vulkan/specs/1.0-wsi_extensions/xhtml/vkspec.html#Vk$goname"}
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2-wsi_extensions/html/vkspec.html#Vk$goname"}
       - {action: doc, from: "NVX$",
-              to: "https://www.khronos.org/registry/vulkan/specs/1.0-extensions/xhtml/vkspec.html#Vk$goname"}
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#Vk$goname"}
+      - {action: doc, from: "NV$",
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#Vk$goname"}
       - {action: doc, from: "AMD$",
-              to: "https://www.khronos.org/registry/vulkan/specs/1.0-extensions/xhtml/vkspec.html#Vk$goname"}
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#Vk$goname"}
       - {action: doc, from: "MVK$"}
       - {action: doc, from: "^callVk",
-              to: "https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vk$goname.html"}
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2/man/html/vk$goname.html"}
       - {action: doc, from: "^Vk",
-              to: "https://www.khronos.org/registry/vulkan/specs/1.0/man/html/Vk$goname.html"}
+              to: "https://www.khronos.org/registry/vulkan/specs/1.2/man/html/Vk$goname.html"}
       - {action: replace, from: _$}
       - {action: replace, from: ^_}
       - {transform: export}
@@ -78,6 +83,9 @@ TRANSLATOR:
     - {target: VkAllocationCallbacks, self: raw}
     - {target: DebugUtilsMessengerCallback, self: raw}
     - {target: ANativeWindow, self: raw}
+    - {target: VkAccelerationStructureInstanceKHR, self: raw}
+    - {target: VkAccelerationStructureMatrixMotionInstanceNV, self: raw}
+    - {target: VkAccelerationStructureSRTMotionInstanceNV, self: raw}
   PtrTips:
     function:
       - {target: ^callVkEnumeratePhysicalDevices$, tips: [0,ref,arr]}
@@ -131,3 +139,4 @@ TRANSLATOR:
       - {target: VkSubpassDescription, tips: [0,0,size,arr,size,arr,arr,ref,size,arr]}
       - {target: VkGraphicsPipelineCreateInfo, tips: [0,0,0,0,arr,ref,ref,ref,ref,ref,ref,ref,ref,ref]}
       - {target: VkInstanceCreateInfo, tips: [0,0,0,ref]}
+      - {target: CuLaunchInfoNVX, tips: [0,0,0,0,0,0,0,0,0,0,size,ref,size,ref]}
