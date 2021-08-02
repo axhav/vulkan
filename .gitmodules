@@ -1,6 +1,6 @@
-[submodule "Vulkan-Headers"]
+[submodule "upstream/Vulkan-Headers"]
 	path = upstream/Vulkan-Headers
 	url = https://github.com/KhronosGroup/Vulkan-Headers.git
-[submodule "MoltenVK"]
-	path = upstream/MoltenVK
+[submodule "upstream/MoltenVk"]
+	path = upstream/MoltenVk
 	url = https://github.com/KhronosGroup/MoltenVK.git
